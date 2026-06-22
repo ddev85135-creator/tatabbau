@@ -1,920 +1,1052 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تتبع آمن — تسجيل الدخول</title>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Discord Panel | لوحة الديسكورد</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep:     #0e0f14;
+      --bg-card:     #16181f;
+      --bg-hover:    #1e2130;
+      --border:      #2a2d3e;
+      --accent:      #5865F2;
+      --accent-dim:  #3c44b0;
+      --accent-glow: rgba(88,101,242,0.25);
+      --green:       #57F287;
+      --yellow:      #FEE75C;
+      --red:         #ED4245;
+      --text-hi:     #ffffff;
+      --text-mid:    #a8adc8;
+      --text-lo:     #5a5f7a;
+      --radius:      14px;
+      --font:        'Cairo', sans-serif;
+    }
 
-:root {
-  --green:      #0d6e4a;
-  --green-mid:  #138a5c;
-  --green-lite: #e6f4ee;
-  --green-glow: rgba(13,110,74,0.18);
-  --gold:       #c8952a;
-  --gold-lite:  #fdf5e6;
-  --navy:       #0b2240;
-  --navy-mid:   #163660;
-  --red:        #c0392b;
-  --red-lite:   #fdecea;
-  --text:       #0f1f15;
-  --muted:      #6b8074;
-  --border:     #cfe0d8;
-  --bg:         #f2f7f4;
-  --white:      #ffffff;
-  --radius:     18px;
-  --radius-sm:  11px;
-  --shadow:     0 4px 24px rgba(13,110,74,0.10);
-  --shadow-lg:  0 12px 48px rgba(13,110,74,0.16);
-}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html, body { min-height: 100vh; font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--text); direction: rtl; }
+    body {
+      font-family: var(--font);
+      background: var(--bg-deep);
+      color: var(--text-hi);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-.page { display: none; min-height: 100vh; }
-.page.active { display: flex; }
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-/* ═══ LANDING ═══ */
-#page-landing { flex-direction: column; background: var(--navy); position: relative; overflow: hidden; }
-#page-landing::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse 70% 60% at 80% 20%, rgba(13,110,74,0.35) 0%, transparent 70%),
-              radial-gradient(ellipse 50% 40% at 10% 80%, rgba(13,110,74,0.2) 0%, transparent 60%);
-}
-.geo-lines { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.geo-lines svg { width: 100%; height: 100%; opacity: 0.07; }
-.landing-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 40px 24px; text-align: center; }
-.brand-lockup { margin-bottom: 52px; animation: fadeDown 0.7s ease both; }
-.brand-shield { width: 88px; height: 88px; background: linear-gradient(145deg, var(--green) 0%, #0a4f36 100%); border-radius: 26px; display: flex; align-items: center; justify-content: center; font-size: 44px; margin: 0 auto 20px; box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 8px 32px rgba(0,0,0,0.4); }
-.brand-name { font-size: 44px; font-weight: 900; color: var(--white); letter-spacing: -1.5px; line-height: 1; }
-.brand-name span { color: #4fd6a0; }
-.brand-tagline { font-size: 15px; color: rgba(255,255,255,0.55); margin-top: 10px; font-weight: 400; }
-.role-prompt { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; animation: fadeDown 0.7s 0.15s ease both; }
-.role-grid { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 380px; }
-.role-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius); padding: 18px 22px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: all 0.22s ease; text-align: right; animation: fadeUp 0.6s ease both; }
-.role-btn:nth-child(1){animation-delay:0.2s} .role-btn:nth-child(2){animation-delay:0.32s} .role-btn:nth-child(3){animation-delay:0.44s}
-.role-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(79,214,160,0.4); transform: translateX(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-.role-btn:active { transform: translateX(-2px) scale(0.99); }
-.role-btn-icon { width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
-.role-btn.student .role-btn-icon { background: rgba(79,214,160,0.15); }
-.role-btn.driver  .role-btn-icon { background: rgba(200,149,42,0.15); }
-.role-btn.supervisor .role-btn-icon { background: rgba(99,179,237,0.15); }
-.role-btn-text .role-btn-name { font-size: 17px; font-weight: 700; color: white; }
-.role-btn-text .role-btn-desc { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 3px; }
-.role-btn-arrow { margin-right: auto; color: rgba(255,255,255,0.25); font-size: 18px; transition: all 0.2s; }
-.role-btn:hover .role-btn-arrow { color: #4fd6a0; transform: translateX(-4px); }
-.landing-footer { margin-top: 36px; font-size: 12px; color: rgba(255,255,255,0.25); animation: fadeUp 0.6s 0.55s ease both; }
+    /* ═══════════════════════════════════════
+       LANDING PAGE
+    ═══════════════════════════════════════ */
+    #page-landing {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
 
-/* ═══ LOGIN ═══ */
-#page-login { flex-direction: column; background: var(--bg); }
-.login-header { background: var(--white); border-bottom: 1px solid var(--border); padding: 16px 20px; display: flex; align-items: center; gap: 14px; }
-.back-btn { width: 38px; height: 38px; border-radius: 11px; background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; transition: background 0.15s; flex-shrink: 0; }
-.back-btn:hover { background: var(--border); }
-.login-header-brand { display: flex; align-items: center; gap: 10px; }
-.login-header-logo { width: 36px; height: 36px; background: var(--green); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-.login-header-name { font-size: 18px; font-weight: 800; color: var(--green); }
-.login-header-name span { font-weight: 400; color: var(--muted); }
-.login-body { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 32px 20px 40px; overflow-y: auto; }
-.role-pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 99px; font-size: 14px; font-weight: 600; margin-bottom: 28px; }
-.role-pill.student { background: var(--green-lite); color: var(--green); }
-.role-pill.driver  { background: var(--gold-lite); color: var(--gold); }
-.role-pill.supervisor { background: #e8f2fd; color: #1a6bbd; }
-.login-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 32px 28px; width: 100%; max-width: 420px; }
-.login-title { font-size: 24px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
-.login-sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; line-height: 1.5; }
-.field { margin-bottom: 18px; }
-.field label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 7px; }
-.field-wrap { position: relative; }
-.field-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 17px; pointer-events: none; z-index: 1; }
-.field input { width: 100%; padding: 13px 44px 13px 15px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'Tajawal', sans-serif; font-size: 15px; background: var(--bg); color: var(--text); outline: none; transition: all 0.2s; direction: rtl; }
-.field input:focus { border-color: var(--green); background: var(--white); box-shadow: 0 0 0 3px var(--green-glow); }
-.field input.error { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,57,43,0.1); }
-.field-eye { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 17px; color: var(--muted); padding: 4px; }
-.error-msg { display: none; background: var(--red-lite); color: var(--red); border: 1px solid rgba(192,57,43,0.2); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 14px; font-weight: 500; margin-bottom: 18px; align-items: center; gap: 8px; }
-.error-msg.show { display: flex; }
-.form-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
-.remember-wrap { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); cursor: pointer; }
-.remember-wrap input[type=checkbox] { width: 17px; height: 17px; accent-color: var(--green); cursor: pointer; }
-.submit-btn { width: 100%; padding: 15px; border-radius: var(--radius-sm); border: none; font-family: 'Tajawal', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; color: white; }
-.submit-btn.student { background: var(--green); }
-.submit-btn.driver  { background: var(--gold); }
-.submit-btn.supervisor { background: #1a6bbd; }
-.submit-btn:hover   { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
-.submit-btn:active  { transform: translateY(0) scale(0.99); }
-.submit-btn.loading { opacity: 0.7; pointer-events: none; }
+    /* Ambient glow */
+    #page-landing::before {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(88,101,242,0.12) 0%, transparent 70%);
+      top: -200px; left: 50%; transform: translateX(-50%);
+      pointer-events: none;
+    }
+    #page-landing::after {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(87,242,135,0.07) 0%, transparent 70%);
+      bottom: -100px; right: 10%;
+      pointer-events: none;
+    }
 
-/* ═══ DASHBOARD ═══ */
-#page-dashboard { flex-direction: column; background: var(--bg); }
-.dash-topbar { background: var(--green); padding: 20px 20px 28px; position: relative; overflow: hidden; }
-.dash-topbar::after { content: ''; position: absolute; bottom: -20px; left: -10px; right: -10px; height: 40px; background: var(--bg); border-radius: 50% 50% 0 0 / 100% 100% 0 0; }
-.dash-top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-.dash-brand { font-size: 20px; font-weight: 800; color: white; }
-.dash-logout { background: rgba(255,255,255,0.15); border: none; color: white; font-family: 'Tajawal', sans-serif; font-size: 13px; font-weight: 600; padding: 7px 14px; border-radius: 20px; cursor: pointer; transition: background 0.2s; }
-.dash-logout:hover { background: rgba(255,255,255,0.25); }
-.dash-welcome { color: rgba(255,255,255,0.75); font-size: 14px; }
-.dash-user-name { color: white; font-size: 22px; font-weight: 800; margin-top: 4px; }
-.dash-role-tag { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; color: white; margin-top: 10px; }
-.dash-body { flex: 1; padding: 20px; overflow-y: auto; }
-.dash-section { margin-bottom: 24px; }
-.dash-section-title { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; }
-.dash-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 18px; margin-bottom: 12px; }
-.quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.quick-btn { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 14px; text-align: center; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow); }
-.quick-btn:hover { border-color: var(--green); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-.quick-btn:active { transform: translateY(0); }
-.quick-icon { font-size: 30px; margin-bottom: 8px; }
-.quick-label { font-size: 14px; font-weight: 700; color: var(--text); }
-.quick-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
-.stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-.stat-box { background: var(--white); border-radius: var(--radius-sm); padding: 14px 10px; text-align: center; box-shadow: var(--shadow); }
-.stat-num { font-size: 28px; font-weight: 900; }
-.stat-lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.stat-box.g .stat-num { color: var(--green); }
-.stat-box.a .stat-num { color: var(--gold); }
-.stat-box.r .stat-num { color: var(--red); }
-.info-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--bg); }
-.info-row:last-child { border-bottom: none; }
-.info-label { font-size: 13px; color: var(--muted); }
-.info-val { font-size: 14px; font-weight: 700; }
-.status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: 99px; font-size: 12px; font-weight: 700; }
-.badge-on { background: var(--green-lite); color: var(--green); }
-.badge-off { background: #fee; color: var(--red); }
-.badge-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: pulse 1.5s infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+    .landing-logo {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, var(--accent), #7289da);
+      border-radius: 24px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 0 40px var(--accent-glow);
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-8px); }
+    }
 
-/* ═══ MODAL ═══ */
-.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 500; align-items: center; justify-content: center; padding: 20px; }
-.modal-overlay.open { display: flex; }
-.modal-box { background: var(--white); border-radius: var(--radius); padding: 28px; width: 100%; max-width: 400px; box-shadow: var(--shadow-lg); animation: popIn 0.25s ease; max-height: 90vh; overflow-y: auto; }
-@keyframes popIn { from{transform:scale(0.92);opacity:0} to{transform:scale(1);opacity:1} }
-.modal-title { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
-.modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
-.modal-close { float: left; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--muted); margin-top: -4px; }
+    .landing-title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      text-align: center;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .landing-title span {
+      background: linear-gradient(135deg, var(--accent) 0%, #a0abff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-/* ═══ STUDENT LIST ═══ */
-.student-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--bg); }
-.student-item:last-child { border-bottom: none; }
-.student-info { display: flex; flex-direction: column; gap: 2px; }
-.student-name { font-size: 15px; font-weight: 700; }
-.student-meta { font-size: 12px; color: var(--muted); }
-.attendance-toggle { display: flex; gap: 6px; }
-.att-btn { padding: 5px 12px; border-radius: 20px; border: none; font-family: 'Tajawal', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.15s; }
-.att-btn.present { background: var(--green-lite); color: var(--green); }
-.att-btn.absent  { background: var(--red-lite); color: var(--red); }
-.att-btn.active-present { background: var(--green); color: white; }
-.att-btn.active-absent  { background: var(--red); color: white; }
+    .landing-sub {
+      color: var(--text-mid);
+      text-align: center;
+      font-size: 1.05rem;
+      max-width: 480px;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
 
-/* ═══ BACK BTN IN DASH ═══ */
-.dash-back-btn { display: inline-flex; align-items: center; gap: 6px; background: none; border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-family: 'Tajawal', sans-serif; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; margin-bottom: 16px; transition: all 0.15s; }
-.dash-back-btn:hover { border-color: var(--green); color: var(--green); }
+    .btn-discord {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 0.85rem 2rem;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 24px var(--accent-glow);
+    }
+    .btn-discord:hover {
+      background: var(--accent-dim);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px var(--accent-glow);
+    }
+    .btn-discord:active { transform: translateY(0); }
 
-/* ═══ TOAST ═══ */
-.toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(12px); background: var(--text); color: white; padding: 13px 22px; border-radius: 12px; font-size: 14px; font-weight: 500; opacity: 0; transition: all 0.28s ease; z-index: 999; pointer-events: none; white-space: nowrap; }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .btn-discord svg { width: 22px; height: 22px; fill: #fff; flex-shrink: 0; }
 
-@keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
-@keyframes fadeUp   { from{opacity:0;transform:translateY(20px)}  to{opacity:1;transform:translateY(0)} }
-</style>
+    .landing-features {
+      display: flex;
+      gap: 1rem;
+      margin-top: 3rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .feat-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 0.4rem 1rem;
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .feat-pill .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+    }
+
+    /* ═══════════════════════════════════════
+       OAUTH CALLBACK LOADER
+    ═══════════════════════════════════════ */
+    #page-loading {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 1.5rem;
+    }
+    .spinner {
+      width: 48px; height: 48px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #page-loading p { color: var(--text-mid); font-size: 1rem; }
+
+    /* ═══════════════════════════════════════
+       SETUP SCREEN (first time: paste token)
+    ═══════════════════════════════════════ */
+    #page-setup {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .setup-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      max-width: 520px;
+      width: 100%;
+    }
+    .setup-card h2 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+    .setup-card p { color: var(--text-mid); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; }
+    .setup-steps {
+      background: var(--bg-deep);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-mid);
+      line-height: 2;
+    }
+    .setup-steps a { color: var(--accent); text-decoration: none; }
+    .field-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+    .field-group label { font-size: 0.82rem; color: var(--text-mid); }
+    .field-group input {
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-hi);
+      font-family: var(--font);
+      font-size: 0.9rem;
+      padding: 0.65rem 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+      direction: ltr;
+    }
+    .field-group input:focus { border-color: var(--accent); }
+    .btn-primary {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.75rem;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--accent-dim); }
+
+    /* ═══════════════════════════════════════
+       MAIN APP SHELL
+    ═══════════════════════════════════════ */
+    #page-app {
+      display: none;
+      min-height: 100vh;
+    }
+
+    /* TOPBAR */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      height: 62px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    .topbar-brand .logo-sm {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--accent), #7289da);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    .topbar-nav {
+      display: flex;
+      gap: 0.25rem;
+    }
+    .nav-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-mid);
+      font-family: var(--font);
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 0.45rem 0.9rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .nav-tab:hover { background: var(--bg-hover); color: var(--text-hi); }
+    .nav-tab.active { background: var(--accent); color: #fff; }
+
+    .topbar-user {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .user-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      overflow: hidden;
+    }
+    .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .user-name { font-size: 0.88rem; font-weight: 600; }
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-mid);
+      font-family: var(--font);
+      font-size: 0.8rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+    /* CONTENT */
+    .content { padding: 2rem 1.5rem; max-width: 1200px; margin: 0 auto; }
+
+    /* PAGE SECTIONS */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ─── STATS STRIP ─── */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      transition: border-color 0.2s;
+    }
+    .stat-card:hover { border-color: var(--accent); }
+    .stat-label { font-size: 0.78rem; color: var(--text-lo); text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-val { font-size: 1.7rem; font-weight: 900; }
+    .stat-val.green { color: var(--green); }
+    .stat-val.yellow { color: var(--yellow); }
+    .stat-val.blue { color: var(--accent); }
+    .stat-change { font-size: 0.78rem; color: var(--text-lo); }
+
+    /* ─── SECTION TITLE ─── */
+    .sec-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-mid);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .sec-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ─── SERVER GRID ─── */
+    .server-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .server-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: border-color 0.2s, transform 0.15s;
+      cursor: pointer;
+    }
+    .server-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .server-icon {
+      width: 52px; height: 52px;
+      border-radius: 16px;
+      background: var(--bg-hover);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .server-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 16px; }
+    .server-info { flex: 1; min-width: 0; }
+    .server-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .server-meta {
+      font-size: 0.78rem;
+      color: var(--text-mid);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.2rem;
+    }
+    .badge {
+      font-size: 0.68rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 50px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+    .badge-admin { background: rgba(88,101,242,0.2); color: var(--accent); }
+    .badge-owner { background: rgba(254,231,92,0.15); color: var(--yellow); }
+    .badge-member { background: rgba(168,173,200,0.1); color: var(--text-mid); }
+
+    .member-count {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.78rem;
+      color: var(--text-mid);
+    }
+    .online-dot {
+      width: 6px; height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* ─── ADMIN SECTION ─── */
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1rem;
+    }
+    .admin-server-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .admin-server-card:hover { border-color: var(--accent); }
+    .admin-card-header {
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .admin-card-body { padding: 1.25rem; }
+    .admin-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.45rem 0;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .admin-stat-row:last-child { border-bottom: none; }
+    .admin-stat-row span:first-child { color: var(--text-mid); }
+    .admin-stat-row span:last-child { font-weight: 700; }
+    .admin-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .btn-sm {
+      flex: 1;
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: none;
+      font-family: var(--font);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-sm:hover { opacity: 0.85; }
+    .btn-sm-primary { background: var(--accent); color: #fff; }
+    .btn-sm-ghost {
+      background: var(--bg-hover);
+      color: var(--text-mid);
+      border: 1px solid var(--border);
+    }
+
+    /* ─── PROFILE PAGE ─── */
+    .profile-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .profile-avatar {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      border: 3px solid var(--accent);
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      font-weight: 900;
+    }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-name { font-size: 1.5rem; font-weight: 900; }
+    .profile-tag { color: var(--text-lo); font-size: 0.9rem; margin-top: 0.2rem; direction: ltr; }
+    .profile-badges { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .info-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+    .info-card-label { font-size: 0.75rem; color: var(--text-lo); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+    .info-card-value { font-size: 1rem; font-weight: 600; direction: ltr; }
+
+    /* ─── EMPTY STATE ─── */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-lo);
+    }
+    .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .empty-state p { font-size: 0.9rem; }
+
+    /* ─── TOAST ─── */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 0.6rem 1.25rem;
+      font-size: 0.85rem;
+      color: var(--text-hi);
+      z-index: 9999;
+      transition: transform 0.3s ease;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .topbar-nav { display: none; }
+      .topbar { padding: 0 1rem; }
+      .content { padding: 1.25rem 1rem; }
+      .user-name { display: none; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- ══════════════ LANDING ══════════════ -->
-<div id="page-landing" class="page active">
-  <div class="geo-lines">
-    <svg viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice">
-      <line x1="0" y1="200" x2="400" y2="0" stroke="white" stroke-width="1"/>
-      <line x1="0" y1="400" x2="400" y2="200" stroke="white" stroke-width="1"/>
-      <line x1="0" y1="600" x2="400" y2="400" stroke="white" stroke-width="1"/>
-      <line x1="0" y1="800" x2="400" y2="600" stroke="white" stroke-width="1"/>
-      <circle cx="320" cy="120" r="80" fill="none" stroke="white" stroke-width="1"/>
-      <circle cx="60" cy="600" r="120" fill="none" stroke="white" stroke-width="1"/>
+<!-- ════════════════════════════════
+     LANDING
+════════════════════════════════ -->
+<div id="page-landing">
+  <div class="landing-logo">🎮</div>
+  <h1 class="landing-title">لوحة إدارة <span>الديسكورد</span></h1>
+  <p class="landing-sub">
+    سجّل دخول بحساب الديسكورد وشوف كل القروبات اللي أنت فيها — وإذا كنت مسؤول تكدر تديرها من هنا مباشرة.
+  </p>
+  <button class="btn-discord" onclick="startLogin()">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20.317 4.492c-1.53-.69-3.17-1.2-4.885-1.49a.075.075 0 0 0-.079.036c-.21.369-.444.85-.608 1.23a18.566 18.566 0 0 0-5.487 0 12.36 12.36 0 0 0-.617-1.23A.077.077 0 0 0 8.562 3c-1.714.29-3.354.8-4.885 1.491a.07.07 0 0 0-.032.027C.533 9.093-.32 13.555.099 17.961a.08.08 0 0 0 .031.055 20.03 20.03 0 0 0 5.993 2.98.078.078 0 0 0 .084-.026 13.83 13.83 0 0 0 1.226-1.963.074.074 0 0 0-.041-.104 13.175 13.175 0 0 1-1.872-.878.075.075 0 0 1-.008-.125c.126-.093.252-.19.372-.287a.075.075 0 0 1 .078-.01c3.927 1.764 8.18 1.764 12.061 0a.075.075 0 0 1 .079.009c.12.098.245.195.372.288a.075.075 0 0 1-.006.125c-.598.344-1.22.635-1.873.877a.075.075 0 0 0-.041.105c.36.687.772 1.341 1.225 1.962a.077.077 0 0 0 .084.028 19.963 19.963 0 0 0 6.002-2.981.076.076 0 0 0 .032-.054c.5-5.094-.838-9.52-3.549-13.442a.06.06 0 0 0-.031-.028zM8.02 15.278c-1.182 0-2.157-1.069-2.157-2.38 0-1.312.956-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.956 2.38-2.157 2.38zm7.975 0c-1.183 0-2.157-1.069-2.157-2.38 0-1.312.955-2.38 2.157-2.38 1.21 0 2.176 1.077 2.157 2.38 0 1.312-.946 2.38-2.157 2.38z"/>
     </svg>
-  </div>
-  <div class="landing-content">
-    <div class="brand-lockup">
-      <div class="brand-shield">🛡️</div>
-      <div class="brand-name">تتبع <span>آمن</span></div>
-      <div class="brand-tagline">منصة تتبع الحافلة المدرسية — آمنة وموثوقة</div>
-    </div>
-    <div class="role-prompt">اختر نوع حسابك</div>
-    <div class="role-grid">
-      <button class="role-btn student" onclick="goToLogin('student')">
-        <div class="role-btn-icon">🎒</div>
-        <div class="role-btn-text">
-          <div class="role-btn-name">طالبة</div>
-          <div class="role-btn-desc">تسجيل الحضور ومتابعة الحافلة</div>
-        </div>
-        <div class="role-btn-arrow">←</div>
-      </button>
-      <button class="role-btn driver" onclick="goToLogin('driver')">
-        <div class="role-btn-icon">🚍</div>
-        <div class="role-btn-text">
-          <div class="role-btn-name">سائق الحافلة</div>
-          <div class="role-btn-desc">إدارة قائمة الطالبات والمسار</div>
-        </div>
-        <div class="role-btn-arrow">←</div>
-      </button>
-      <button class="role-btn supervisor" onclick="goToLogin('supervisor')">
-        <div class="role-btn-icon">📋</div>
-        <div class="role-btn-text">
-          <div class="role-btn-name">مشرفة</div>
-          <div class="role-btn-desc">إدارة الحسابات والتقارير</div>
-        </div>
-        <div class="role-btn-arrow">←</div>
-      </button>
-    </div>
-    <div class="landing-footer">© 2025 تتبع آمن — جميع الحقوق محفوظة</div>
+    تسجيل الدخول بالديسكورد
+  </button>
+  <div class="landing-features">
+    <span class="feat-pill"><span class="dot" style="background:var(--green)"></span> كل قروباتك في مكان واحد</span>
+    <span class="feat-pill"><span class="dot" style="background:var(--accent)"></span> إحصائيات القروبات</span>
+    <span class="feat-pill"><span class="dot" style="background:var(--yellow)"></span> لوحة خاصة للمسؤولين</span>
   </div>
 </div>
 
-<!-- ══════════════ LOGIN ══════════════ -->
-<div id="page-login" class="page">
-  <div class="login-header">
-    <button class="back-btn" onclick="goTo('landing')">→</button>
-    <div class="login-header-brand">
-      <div class="login-header-logo">🛡️</div>
-      <div class="login-header-name">تتبع <span>آمن</span></div>
+<!-- ════════════════════════════════
+     SETUP (first time)
+════════════════════════════════ -->
+<div id="page-setup">
+  <div class="setup-card">
+    <h2>⚙️ إعداد التطبيق</h2>
+    <p>عشان يشتغل تسجيل الدخول صح، محتاج تربط التطبيق بـ Discord Developer Portal.</p>
+    <div class="setup-steps">
+      <strong>الخطوات:</strong><br>
+      1. روح على <a href="https://discord.com/developers/applications" target="_blank">discord.com/developers</a><br>
+      2. أنشئ Application جديد أو افتح موجود<br>
+      3. من OAuth2 → General، انسخ Client ID<br>
+      4. أضف Redirect URI: <code id="redirect-uri-display" style="color:var(--accent);direction:ltr;display:inline-block"></code>
     </div>
+    <div class="field-group">
+      <label>Client ID</label>
+      <input type="text" id="input-client-id" placeholder="1234567890123456789" />
+    </div>
+    <div class="field-group">
+      <label>Client Secret <span style="color:var(--text-lo);font-size:0.75rem">(اختياري - للبوت)</span></label>
+      <input type="password" id="input-client-secret" placeholder="xxxxxxxxxxxxxxxxxx" />
+    </div>
+    <button class="btn-primary" onclick="saveSetup()">حفظ والمتابعة</button>
   </div>
-  <div class="login-body">
-    <div class="role-pill" id="login-role-pill"></div>
-    <div class="login-card">
-      <div class="login-title">تسجيل الدخول</div>
-      <div class="login-sub">أدخل بياناتك للوصول إلى حسابك</div>
-      <div class="error-msg" id="login-error">
-        <span>⚠️</span>
-        <span id="login-error-text">اسم المستخدم أو كلمة المرور غير صحيحة</span>
-      </div>
-      <div class="field">
-        <label>اسم المستخدم</label>
-        <div class="field-wrap">
-          <span class="field-icon">👤</span>
-          <input type="text" id="login-user" placeholder="أدخل اسم المستخدم" autocomplete="username">
+</div>
+
+<!-- ════════════════════════════════
+     LOADING
+════════════════════════════════ -->
+<div id="page-loading">
+  <div class="spinner"></div>
+  <p>جاري تسجيل الدخول...</p>
+</div>
+
+<!-- ════════════════════════════════
+     MAIN APP
+════════════════════════════════ -->
+<div id="page-app">
+  <nav class="topbar">
+    <div class="topbar-brand">
+      <div class="logo-sm">🎮</div>
+      <span>Discord Panel</span>
+    </div>
+    <div class="topbar-nav">
+      <button class="nav-tab active" onclick="showSection('guilds')">قروباتي</button>
+      <button class="nav-tab" onclick="showSection('admin')" id="tab-admin">إداراتي</button>
+      <button class="nav-tab" onclick="showSection('profile')">الملف الشخصي</button>
+    </div>
+    <div class="topbar-user">
+      <div class="user-avatar" id="topbar-avatar">؟</div>
+      <span class="user-name" id="topbar-name">...</span>
+      <button class="btn-logout" onclick="logout()">خروج</button>
+    </div>
+  </nav>
+
+  <div class="content">
+
+    <!-- ─── ALL GUILDS ─── -->
+    <div class="section active" id="section-guilds">
+      <div class="stats-strip" id="stats-strip"></div>
+      <div class="sec-title">جميع القروبات</div>
+      <div class="server-grid" id="all-guilds-grid"></div>
+    </div>
+
+    <!-- ─── ADMIN GUILDS ─── -->
+    <div class="section" id="section-admin">
+      <div class="sec-title">القروبات اللي أنت مسؤول فيها</div>
+      <div class="admin-grid" id="admin-guilds-grid"></div>
+    </div>
+
+    <!-- ─── PROFILE ─── -->
+    <div class="section" id="section-profile">
+      <div class="profile-header">
+        <div class="profile-avatar" id="profile-avatar">؟</div>
+        <div>
+          <div class="profile-name" id="profile-name">...</div>
+          <div class="profile-tag" id="profile-tag">#0000</div>
+          <div class="profile-badges" id="profile-badges"></div>
         </div>
       </div>
-      <div class="field">
-        <label>كلمة المرور</label>
-        <div class="field-wrap">
-          <span class="field-icon">🔒</span>
-          <input type="password" id="login-pass" placeholder="أدخل كلمة المرور" autocomplete="current-password">
-          <button class="field-eye" onclick="togglePass()" id="eye-btn" type="button">👁️</button>
-        </div>
-      </div>
-      <div class="form-meta">
-        <label class="remember-wrap">
-          <input type="checkbox" id="remember-me"> تذكّرني
-        </label>
-      </div>
-      <button class="submit-btn" id="login-btn" onclick="doLogin()">
-        <span id="login-btn-text">دخول</span>
-      </button>
+      <div class="info-grid" id="profile-info-grid"></div>
     </div>
-  </div>
-</div>
 
-<!-- ══════════════ DASHBOARD ══════════════ -->
-<div id="page-dashboard" class="page">
-  <div class="dash-topbar">
-    <div class="dash-top-row">
-      <div class="dash-brand">🛡️ تتبع آمن</div>
-      <button class="dash-logout" onclick="doLogout()">خروج ↩</button>
-    </div>
-    <div class="dash-welcome">أهلاً وسهلاً،</div>
-    <div class="dash-user-name" id="dash-name">—</div>
-    <div class="dash-role-tag" id="dash-role-tag">—</div>
-  </div>
-  <div class="dash-body" id="dash-body"></div>
-</div>
-
-<!-- ══════════════ MODAL: إنشاء حساب سائق ══════════════ -->
-<div class="modal-overlay" id="modal-add-driver">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal('modal-add-driver')">×</button>
-    <div class="modal-title">➕ إضافة سائق</div>
-    <div class="modal-sub">أدخل بيانات السائق الجديد</div>
-    <div class="field">
-      <label>الاسم الكامل</label>
-      <div class="field-wrap">
-        <span class="field-icon">👤</span>
-        <input type="text" id="drv-name" placeholder="اسم السائق">
-      </div>
-    </div>
-    <div class="field">
-      <label>رقم الجوال</label>
-      <div class="field-wrap">
-        <span class="field-icon">📱</span>
-        <input type="text" id="drv-phone" placeholder="05xxxxxxxx">
-      </div>
-    </div>
-    <div class="field">
-      <label>اسم المستخدم</label>
-      <div class="field-wrap">
-        <span class="field-icon">🔖</span>
-        <input type="text" id="drv-user" placeholder="اسم المستخدم للدخول">
-      </div>
-    </div>
-    <div class="field">
-      <label>كلمة المرور</label>
-      <div class="field-wrap">
-        <span class="field-icon">🔒</span>
-        <input type="password" id="drv-pass" placeholder="كلمة المرور">
-      </div>
-    </div>
-    <div class="field">
-      <label>رقم الحافلة</label>
-      <div class="field-wrap">
-        <span class="field-icon">🚍</span>
-        <input type="text" id="drv-bus" placeholder="مثال: 1 أو 2">
-      </div>
-    </div>
-    <button class="submit-btn supervisor" onclick="saveDriver()">حفظ السائق</button>
-  </div>
-</div>
-
-<!-- ══════════════ MODAL: إنشاء حساب طالبة ══════════════ -->
-<div class="modal-overlay" id="modal-add-student">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal('modal-add-student')">×</button>
-    <div class="modal-title">➕ إضافة طالبة</div>
-    <div class="modal-sub">أدخل بيانات الطالبة الجديدة</div>
-    <div class="field">
-      <label>الاسم الكامل</label>
-      <div class="field-wrap">
-        <span class="field-icon">👤</span>
-        <input type="text" id="std-name" placeholder="اسم الطالبة">
-      </div>
-    </div>
-    <div class="field">
-      <label>رقم جوال ولي الأمر</label>
-      <div class="field-wrap">
-        <span class="field-icon">👨‍👧</span>
-        <input type="text" id="std-parent" placeholder="05xxxxxxxx">
-      </div>
-    </div>
-    <div class="field">
-      <label>اسم المستخدم</label>
-      <div class="field-wrap">
-        <span class="field-icon">🔖</span>
-        <input type="text" id="std-user" placeholder="اسم المستخدم للدخول">
-      </div>
-    </div>
-    <div class="field">
-      <label>كلمة المرور</label>
-      <div class="field-wrap">
-        <span class="field-icon">🔒</span>
-        <input type="password" id="std-pass" placeholder="كلمة المرور">
-      </div>
-    </div>
-    <div class="field">
-      <label>رقم الباص</label>
-      <div class="field-wrap">
-        <span class="field-icon">🚌</span>
-        <select id="std-bus" style="width:100%;padding:13px 44px 13px 15px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'Tajawal',sans-serif;font-size:15px;background:var(--bg);color:var(--text);outline:none;direction:rtl;">
-          <option value="1">الباص الأول</option>
-          <option value="2">الباص الثاني</option>
-        </select>
-      </div>
-    </div>
-    <button class="submit-btn supervisor" onclick="saveStudent()">حفظ الطالبة</button>
   </div>
 </div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
+<!-- ════════════════════════════════
+     SCRIPT
+════════════════════════════════ -->
 <script>
-// ══════════════════════════════════════
-//  STATE & STORAGE
-// ══════════════════════════════════════
-let currentRole = 'student';
-let currentUser = null;
-let currentView = 'main'; // main | attendance | students | bus-detail
+/* ─────────────────────────────────
+   CONFIG STORAGE
+───────────────────────────────── */
+const REDIRECT_URI = window.location.origin + window.location.pathname;
+const SCOPES = 'identify guilds';
+const STORAGE_KEY = 'dc_panel_config';
+const TOKEN_KEY   = 'dc_panel_token';
+const USER_KEY    = 'dc_panel_user';
+const GUILDS_KEY  = 'dc_panel_guilds';
 
-// حساب المشرفة الثابت
-const SUPERVISOR = { user: 'نوال', pass: '6767', name: 'نوال', role: 'supervisor' };
+document.getElementById('redirect-uri-display').textContent = REDIRECT_URI;
 
-function loadData() {
-  return {
-    drivers:  JSON.parse(localStorage.getItem('drivers')  || '[]'),
-    students: JSON.parse(localStorage.getItem('students') || '[]'),
-  };
+function getConfig() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch { return null; }
 }
-function saveDrivers(arr)  { localStorage.setItem('drivers',  JSON.stringify(arr)); }
-function saveStudents(arr) { localStorage.setItem('students', JSON.stringify(arr)); }
+function saveConfig(c) { localStorage.setItem(STORAGE_KEY, JSON.stringify(c)); }
 
-// ══════════════════════════════════════
-//  NAVIGATION
-// ══════════════════════════════════════
-function goTo(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  window.scrollTo(0, 0);
-}
-
-function goToLogin(role) {
-  currentRole = role;
-  const pills = { student: ['🎒', 'طالبة', 'student'], driver: ['🚍', 'سائق', 'driver'], supervisor: ['📋', 'مشرفة', 'supervisor'] };
-  const p = pills[role];
-  const pill = document.getElementById('login-role-pill');
-  pill.className = 'role-pill ' + p[2];
-  pill.innerHTML = p[0] + ' ' + p[1];
-  document.getElementById('login-btn').className = 'submit-btn ' + p[2];
-  document.getElementById('login-user').value = '';
-  document.getElementById('login-pass').value = '';
-  document.getElementById('login-error').classList.remove('show');
-  goTo('login');
+/* ─────────────────────────────────
+   PAGE ROUTING
+───────────────────────────────── */
+function showPage(id) {
+  ['page-landing','page-setup','page-loading','page-app'].forEach(p => {
+    document.getElementById(p).style.display = 'none';
+  });
+  const el = document.getElementById(id);
+  el.style.display = (id === 'page-loading') ? 'flex' : (id === 'page-setup' || id === 'page-landing') ? 'flex' : 'block';
 }
 
-// ══════════════════════════════════════
-//  LOGIN
-// ══════════════════════════════════════
-function doLogin() {
-  const user = document.getElementById('login-user').value.trim();
-  const pass = document.getElementById('login-pass').value;
-  const btn  = document.getElementById('login-btn');
-  const err  = document.getElementById('login-error');
-
-  err.classList.remove('show');
-  btn.classList.add('loading');
-  document.getElementById('login-btn-text').textContent = 'جاري التحقق...';
-
-  setTimeout(() => {
-    btn.classList.remove('loading');
-    document.getElementById('login-btn-text').textContent = 'دخول';
-
-    // تحقق المشرفة
-    if (currentRole === 'supervisor') {
-      if (user === SUPERVISOR.user && pass === SUPERVISOR.pass) {
-        openDashboard(SUPERVISOR);
-        return;
-      }
-    }
-
-    // تحقق السائقين
-    if (currentRole === 'driver') {
-      const { drivers } = loadData();
-      const found = drivers.find(d => d.user === user && d.pass === pass);
-      if (found) { openDashboard({ name: found.name, role: 'driver', bus: found.bus }); return; }
-    }
-
-    // تحقق الطالبات
-    if (currentRole === 'student') {
-      const { students } = loadData();
-      const found = students.find(s => s.user === user && s.pass === pass);
-      if (found) { openDashboard({ name: found.name, role: 'student', bus: found.bus, parent: found.parent }); return; }
-    }
-
-    // فشل
-    err.classList.add('show');
-    document.getElementById('login-user').classList.add('error');
-    document.getElementById('login-pass').classList.add('error');
-    setTimeout(() => {
-      document.getElementById('login-user').classList.remove('error');
-      document.getElementById('login-pass').classList.remove('error');
-    }, 1800);
-  }, 900);
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  const tabs = { guilds: 0, admin: 1, profile: 2 };
+  document.querySelectorAll('.nav-tab')[tabs[name]]?.classList.add('active');
 }
 
-function togglePass() {
-  const inp = document.getElementById('login-pass');
-  const eye = document.getElementById('eye-btn');
-  if (inp.type === 'password') { inp.type = 'text'; eye.textContent = '🙈'; }
-  else { inp.type = 'password'; eye.textContent = '👁️'; }
+/* ─────────────────────────────────
+   SETUP
+───────────────────────────────── */
+function saveSetup() {
+  const cid = document.getElementById('input-client-id').value.trim();
+  if (!cid) { showToast('أدخل Client ID'); return; }
+  saveConfig({ clientId: cid });
+  showToast('تم الحفظ ✓');
+  setTimeout(() => showPage('page-landing'), 600);
 }
 
-// ══════════════════════════════════════
-//  DASHBOARD
-// ══════════════════════════════════════
-function openDashboard(user) {
-  currentUser = user;
-  const roleNames = { student: '🎒 طالبة', driver: '🚍 سائق', supervisor: '📋 مشرفة' };
-  document.getElementById('dash-name').textContent = user.name;
-  document.getElementById('dash-role-tag').textContent = roleNames[user.role];
-  renderDashMain();
-  goTo('dashboard');
+/* ─────────────────────────────────
+   OAUTH2 FLOW
+───────────────────────────────── */
+function startLogin() {
+  const cfg = getConfig();
+  if (!cfg || !cfg.clientId) {
+    showPage('page-setup');
+    return;
+  }
+  const state = Math.random().toString(36).slice(2);
+  sessionStorage.setItem('oauth_state', state);
+  const params = new URLSearchParams({
+    client_id:     cfg.clientId,
+    redirect_uri:  REDIRECT_URI,
+    response_type: 'token',
+    scope:         SCOPES,
+    state
+  });
+  window.location.href = 'https://discord.com/api/oauth2/authorize?' + params;
 }
 
-function renderDashMain() {
-  currentView = 'main';
-  const body = document.getElementById('dash-body');
-  const role = currentUser.role;
+/* ─────────────────────────────────
+   HANDLE CALLBACK (fragment token)
+───────────────────────────────── */
+async function handleCallback() {
+  const hash = window.location.hash.slice(1);
+  if (!hash) return false;
+  const params = new URLSearchParams(hash);
+  const token  = params.get('access_token');
+  if (!token) return false;
 
-  if (role === 'supervisor') { renderSupervisorMain(body); }
-  else if (role === 'driver')  { renderDriverMain(body); }
-  else { renderStudentMain(body); }
+  // Clean URL
+  history.replaceState(null, '', window.location.pathname);
+  showPage('page-loading');
+
+  try {
+    // Fetch user
+    const uRes = await fetch('https://discord.com/api/users/@me', {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    if (!uRes.ok) throw new Error('فشل جلب المستخدم');
+    const user = await uRes.json();
+
+    // Fetch guilds
+    const gRes = await fetch('https://discord.com/api/users/@me/guilds', {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    if (!gRes.ok) throw new Error('فشل جلب القروبات');
+    const guilds = await gRes.json();
+
+    // Save
+    localStorage.setItem(TOKEN_KEY,  token);
+    localStorage.setItem(USER_KEY,   JSON.stringify(user));
+    localStorage.setItem(GUILDS_KEY, JSON.stringify(guilds));
+
+    renderApp(user, guilds);
+    return true;
+  } catch(e) {
+    showToast('خطأ: ' + e.message);
+    showPage('page-landing');
+    return false;
+  }
 }
 
-// ─── مشرفة - الرئيسية ───
-function renderSupervisorMain(body) {
-  const { drivers, students } = loadData();
-  const bus1 = students.filter(s => s.bus === '1');
-  const bus2 = students.filter(s => s.bus === '2');
+/* ─────────────────────────────────
+   LOGOUT
+───────────────────────────────── */
+function logout() {
+  [TOKEN_KEY, USER_KEY, GUILDS_KEY].forEach(k => localStorage.removeItem(k));
+  showPage('page-landing');
+  showToast('تم تسجيل الخروج');
+}
 
-  body.innerHTML = `
-    <div class="dash-section">
-      <div class="dash-section-title">نظرة عامة</div>
-      <div class="stat-row">
-        <div class="stat-box a"><div class="stat-num">${drivers.length}</div><div class="stat-lbl">سائقين</div></div>
-        <div class="stat-box g"><div class="stat-num">${students.length}</div><div class="stat-lbl">طالبات</div></div>
-        <div class="stat-box a"><div class="stat-num">2</div><div class="stat-lbl">حافلات</div></div>
-      </div>
+/* ─────────────────────────────────
+   RENDER APP
+───────────────────────────────── */
+function avatarURL(user) {
+  if (!user.avatar) return null;
+  return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`;
+}
+function guildIconURL(g) {
+  if (!g.icon) return null;
+  return `https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png?size=64`;
+}
+
+const MANAGE_GUILD = 0x20; // Manage Guild permission bit
+const ADMIN_BIT    = 0x8;  // Administrator bit
+function isAdmin(g) { return !!(parseInt(g.permissions) & (MANAGE_GUILD | ADMIN_BIT)); }
+function isOwner(g) { return !!g.owner; }
+
+function renderApp(user, guilds) {
+  showPage('page-app');
+
+  /* ── TOPBAR ── */
+  const av = document.getElementById('topbar-avatar');
+  const url = avatarURL(user);
+  if (url) { av.innerHTML = `<img src="${url}" alt="avatar"/>`; }
+  else { av.textContent = (user.username || '؟')[0].toUpperCase(); }
+  document.getElementById('topbar-name').textContent = user.global_name || user.username;
+
+  /* ── STATS ── */
+  const adminCount = guilds.filter(g => isAdmin(g) || isOwner(g)).length;
+  document.getElementById('stats-strip').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">إجمالي القروبات</div>
+      <div class="stat-val blue">${guilds.length}</div>
+      <div class="stat-change">جميع القروبات المرتبطة</div>
     </div>
-
-    <div class="dash-section">
-      <div class="dash-section-title">تقرير الحضور</div>
-      <div class="dash-card" style="cursor:pointer;display:flex;align-items:center;gap:14px" onclick="renderAttendanceReport()">
-        <div style="width:50px;height:50px;background:var(--green-lite);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px">📊</div>
-        <div style="flex:1">
-          <div style="font-weight:700;font-size:16px">تقرير الحضور</div>
-          <div style="font-size:13px;color:var(--muted)">عرض حضور الباص الأول والثاني</div>
-        </div>
-        <span style="color:var(--muted);font-size:20px">←</span>
-      </div>
+    <div class="stat-card">
+      <div class="stat-label">قروبات تديرها</div>
+      <div class="stat-val yellow">${adminCount}</div>
+      <div class="stat-change">مسؤول / أدمن / أونر</div>
     </div>
-
-    <div class="dash-section">
-      <div class="dash-section-title">الطالبات</div>
-      <div class="dash-card" style="cursor:pointer;display:flex;align-items:center;gap:14px" onclick="renderStudentsList()">
-        <div style="width:50px;height:50px;background:var(--gold-lite);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px">👩‍🎓</div>
-        <div style="flex:1">
-          <div style="font-weight:700;font-size:16px">قائمة الطالبات</div>
-          <div style="font-size:13px;color:var(--muted)">الحضور والغياب لكل الطالبات</div>
-        </div>
-        <span style="color:var(--muted);font-size:20px">←</span>
-      </div>
+    <div class="stat-card">
+      <div class="stat-label">عضو عادي</div>
+      <div class="stat-val green">${guilds.length - adminCount}</div>
+      <div class="stat-change">بدون صلاحيات إدارة</div>
     </div>
+  `;
 
-    <div class="dash-section">
-      <div class="dash-section-title">إدارة الحسابات</div>
-      <div class="quick-grid">
-        <div class="quick-btn" onclick="openModal('modal-add-driver')">
-          <div class="quick-icon">🚍</div>
-          <div class="quick-label">إضافة سائق</div>
-          <div class="quick-sub">حساب جديد</div>
-        </div>
-        <div class="quick-btn" onclick="openModal('modal-add-student')">
-          <div class="quick-icon">🎒</div>
-          <div class="quick-label">إضافة طالبة</div>
-          <div class="quick-sub">حساب جديد</div>
-        </div>
-        <div class="quick-btn" onclick="renderDriversList()">
-          <div class="quick-icon">📋</div>
-          <div class="quick-label">السائقين</div>
-          <div class="quick-sub">${drivers.length} سائق</div>
-        </div>
-        <div class="quick-btn" onclick="renderStudentsList()">
-          <div class="quick-icon">👩‍🎓</div>
-          <div class="quick-label">الطالبات</div>
-          <div class="quick-sub">${students.length} طالبة</div>
-        </div>
-      </div>
-    </div>`;
-}
-
-// ─── تقرير الحضور (اختيار الباص) ───
-function renderAttendanceReport() {
-  currentView = 'attendance';
-  const body = document.getElementById('dash-body');
-  body.innerHTML = `
-    <button class="dash-back-btn" onclick="renderSupervisorMain(document.getElementById('dash-body'))">→ رجوع</button>
-    <div class="dash-section">
-      <div class="dash-section-title">تقرير الحضور</div>
-      <div class="dash-card" style="cursor:pointer;display:flex;align-items:center;gap:14px;margin-bottom:12px" onclick="renderBusDetail('1')">
-        <div style="width:50px;height:50px;background:var(--green-lite);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px">🚌</div>
-        <div style="flex:1">
-          <div style="font-weight:700;font-size:16px">الباص الأول</div>
-          <div style="font-size:13px;color:var(--muted)" id="bus1-info">جاري التحميل...</div>
-        </div>
-        <span style="color:var(--muted);font-size:20px">←</span>
-      </div>
-      <div class="dash-card" style="cursor:pointer;display:flex;align-items:center;gap:14px" onclick="renderBusDetail('2')">
-        <div style="width:50px;height:50px;background:var(--gold-lite);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px">🚌</div>
-        <div style="flex:1">
-          <div style="font-weight:700;font-size:16px">الباص الثاني</div>
-          <div style="font-size:13px;color:var(--muted)" id="bus2-info">جاري التحميل...</div>
-        </div>
-        <span style="color:var(--muted);font-size:20px">←</span>
-      </div>
-    </div>`;
-
-  // تحديث المعلومات
-  const { drivers, students } = loadData();
-  const bus1Students = students.filter(s => s.bus === '1');
-  const bus2Students = students.filter(s => s.bus === '2');
-  const bus1Driver = drivers.find(d => d.bus === '1');
-  const bus2Driver = drivers.find(d => d.bus === '2');
-
-  const b1Info = document.getElementById('bus1-info');
-  const b2Info = document.getElementById('bus2-info');
-  if (b1Info) b1Info.textContent = (bus1Driver ? 'السائق: ' + bus1Driver.name + ' — ' : '') + bus1Students.length + ' طالبة';
-  if (b2Info) b2Info.textContent = (bus2Driver ? 'السائق: ' + bus2Driver.name + ' — ' : '') + bus2Students.length + ' طالبة';
-}
-
-// ─── تفاصيل الباص ───
-function renderBusDetail(busNum) {
-  const { drivers, students } = loadData();
-  const busStudents = students.filter(s => s.bus === busNum);
-  const busDriver = drivers.find(d => d.bus === busNum);
-  const body = document.getElementById('dash-body');
-
-  const attendance = JSON.parse(localStorage.getItem('attendance_bus' + busNum) || '{}');
-
-  let studentsHTML = busStudents.length === 0
-    ? '<div style="text-align:center;color:var(--muted);padding:20px">لا توجد طالبات في هذا الباص</div>'
-    : busStudents.map(s => {
-        const att = attendance[s.user] || 'none';
-        return `
-        <div class="student-item">
-          <div class="student-info">
-            <div class="student-name">${s.name}</div>
-            <div class="student-meta">ولي الأمر: ${s.parent}</div>
-          </div>
-          <div class="attendance-toggle">
-            <button class="att-btn ${att === 'present' ? 'active-present' : 'present'}"
-              onclick="setAttendance('bus${busNum}','${s.user}','present',this)">✅ حاضرة</button>
-            <button class="att-btn ${att === 'absent' ? 'active-absent' : 'absent'}"
-              onclick="setAttendance('bus${busNum}','${s.user}','absent',this)">🚫 غائبة</button>
+  /* ── ALL GUILDS ── */
+  const allGrid = document.getElementById('all-guilds-grid');
+  if (guilds.length === 0) {
+    allGrid.innerHTML = `<div class="empty-state"><div class="icon">🏜️</div><p>ما فيه قروبات مرتبطة بحسابك</p></div>`;
+  } else {
+    allGrid.innerHTML = guilds.map(g => {
+      const icon  = guildIconURL(g);
+      const role  = isOwner(g) ? 'owner' : isAdmin(g) ? 'admin' : 'member';
+      const label = role === 'owner' ? 'أونر' : role === 'admin' ? 'أدمن' : 'عضو';
+      const iconHTML = icon
+        ? `<img src="${icon}" alt="${escapeHtml(g.name)}" onerror="this.parentNode.textContent='🎮'"/>`
+        : guildEmoji(g.name);
+      return `
+        <div class="server-card">
+          <div class="server-icon">${iconHTML}</div>
+          <div class="server-info">
+            <div class="server-name">${escapeHtml(g.name)}</div>
+            <div class="server-meta">
+              <span class="badge badge-${role}">${label}</span>
+            </div>
           </div>
         </div>`;
-      }).join('');
+    }).join('');
+  }
 
-  body.innerHTML = `
-    <button class="dash-back-btn" onclick="renderAttendanceReport()">→ رجوع</button>
-    <div class="dash-section">
-      <div class="dash-section-title">الباص ${busNum === '1' ? 'الأول' : 'الثاني'}</div>
-      ${busDriver ? `
-      <div class="dash-card" style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
-        <div style="width:50px;height:50px;background:var(--green-lite);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px">👨‍✈️</div>
-        <div>
-          <div style="font-weight:700;font-size:16px">${busDriver.name}</div>
-          <div style="font-size:13px;color:var(--muted)">📱 ${busDriver.phone} — رقم الباص: ${busDriver.bus}</div>
-        </div>
-      </div>` : '<div class="dash-card" style="color:var(--muted);text-align:center">لم يُعيَّن سائق لهذا الباص</div>'}
-      <div class="dash-card">
-        <div style="font-weight:700;margin-bottom:12px">الطالبات (${busStudents.length})</div>
-        ${studentsHTML}
-      </div>
-    </div>`;
-}
+  /* ── ADMIN GUILDS ── */
+  const adminGuilds  = guilds.filter(g => isAdmin(g) || isOwner(g));
+  const adminGrid    = document.getElementById('admin-guilds-grid');
+  if (adminGuilds.length === 0) {
+    adminGrid.innerHTML = `<div class="empty-state"><div class="icon">🛡️</div><p>ما عندك أي صلاحيات إدارة في أي قروب</p></div>`;
+    document.getElementById('tab-admin').style.display = 'none';
+  } else {
+    adminGrid.innerHTML = adminGuilds.map(g => {
+      const icon  = guildIconURL(g);
+      const role  = isOwner(g) ? 'owner' : 'admin';
+      const label = role === 'owner' ? 'أونر 👑' : 'أدمن 🛡️';
+      const iconHTML = icon
+        ? `<img src="${icon}" alt="${escapeHtml(g.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:12px" onerror="this.parentNode.textContent='🎮'"/>`
+        : guildEmoji(g.name);
+      return `
+        <div class="admin-server-card">
+          <div class="admin-card-header">
+            <div class="server-icon">${iconHTML}</div>
+            <div>
+              <div class="server-name">${escapeHtml(g.name)}</div>
+              <div class="server-meta"><span class="badge badge-${role}">${label}</span></div>
+            </div>
+          </div>
+          <div class="admin-card-body">
+            <div class="admin-stat-row">
+              <span>رقم القروب</span>
+              <span style="direction:ltr;font-size:0.8rem;color:var(--text-mid)">${g.id}</span>
+            </div>
+            <div class="admin-stat-row">
+              <span>الصلاحيات</span>
+              <span>${formatPerms(g.permissions)}</span>
+            </div>
+            <div class="admin-actions">
+              <button class="btn-sm btn-sm-primary" onclick="openGuild('${g.id}')">فتح القروب</button>
+              <button class="btn-sm btn-sm-ghost" onclick="copyId('${g.id}')">نسخ ID</button>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  }
 
-function setAttendance(busKey, studentUser, status, btn) {
-  const key = 'attendance_' + busKey;
-  const att = JSON.parse(localStorage.getItem(key) || '{}');
-  att[studentUser] = status;
-  localStorage.setItem(key, JSON.stringify(att));
-  // تحديث الأزرار
-  const row = btn.closest('.attendance-toggle');
-  row.querySelectorAll('.att-btn').forEach(b => {
-    if (b.classList.contains('present') || b.classList.contains('active-present')) {
-      b.className = 'att-btn present';
-    } else {
-      b.className = 'att-btn absent';
-    }
-  });
-  btn.className = 'att-btn ' + (status === 'present' ? 'active-present' : 'active-absent');
-  showToast(status === 'present' ? '✅ تم تسجيل الحضور' : '🚫 تم تسجيل الغياب');
-}
+  /* ── PROFILE ── */
+  const av2 = document.getElementById('profile-avatar');
+  const url2 = avatarURL(user);
+  if (url2) { av2.innerHTML = `<img src="${url2}" alt="avatar"/>`; }
+  else { av2.textContent = (user.username || '؟')[0].toUpperCase(); }
 
-// ─── قائمة الطالبات (حضور/غياب) ───
-function renderStudentsList() {
-  const { students } = loadData();
-  const body = document.getElementById('dash-body');
+  document.getElementById('profile-name').textContent = user.global_name || user.username;
+  document.getElementById('profile-tag').textContent  = user.discriminator && user.discriminator !== '0'
+    ? '#' + user.discriminator : '@' + user.username;
 
-  const att1 = JSON.parse(localStorage.getItem('attendance_bus1') || '{}');
-  const att2 = JSON.parse(localStorage.getItem('attendance_bus2') || '{}');
+  // Flags/badges
+  const badges = [];
+  if (user.public_flags) {
+    if (user.public_flags & 64)   badges.push({ label: 'HypeSquad Events', color: '#f47fff' });
+    if (user.public_flags & 128)  badges.push({ label: 'Bug Hunter', color: '#f4900c' });
+    if (user.public_flags & 256)  badges.push({ label: 'HypeSquad Bravery', color: '#9b84ee' });
+    if (user.public_flags & 512)  badges.push({ label: 'HypeSquad Brilliance', color: '#f47b67' });
+    if (user.public_flags & 1024) badges.push({ label: 'HypeSquad Balance', color: '#45ddc0' });
+    if (user.public_flags & 4096) badges.push({ label: 'Early Supporter', color: '#996bc7' });
+    if (user.public_flags & 131072) badges.push({ label: 'Bot Dev', color: var_accent() });
+  }
+  document.getElementById('profile-badges').innerHTML = badges.map(b =>
+    `<span class="badge" style="background:${b.color}22;color:${b.color}">${b.label}</span>`
+  ).join('');
 
-  const allAtt = { ...att1, ...att2 };
-
-  const present = students.filter(s => allAtt[s.user] === 'present');
-  const absent  = students.filter(s => allAtt[s.user] === 'absent');
-  const unknown = students.filter(s => !allAtt[s.user]);
-
-  const renderGroup = (list, label, color) => list.length === 0 ? '' : `
-    <div style="font-weight:700;font-size:13px;color:${color};margin:12px 0 6px">${label} (${list.length})</div>
-    ${list.map(s => `
-      <div class="student-item">
-        <div class="student-info">
-          <div class="student-name">${s.name}</div>
-          <div class="student-meta">الباص ${s.bus === '1' ? 'الأول' : 'الثاني'} — ولي الأمر: ${s.parent}</div>
-        </div>
-        <span class="status-badge ${allAtt[s.user] === 'present' ? 'badge-on' : allAtt[s.user] === 'absent' ? 'badge-off' : ''}" 
-          style="${!allAtt[s.user] ? 'background:#f5f5f5;color:#999' : ''}">
-          ${allAtt[s.user] === 'present' ? '✅ حاضرة' : allAtt[s.user] === 'absent' ? '🚫 غائبة' : '⏳ لم يُسجَّل'}
-        </span>
-      </div>`).join('')}`;
-
-  body.innerHTML = `
-    <button class="dash-back-btn" onclick="renderSupervisorMain(document.getElementById('dash-body'))">→ رجوع</button>
-    <div class="dash-section">
-      <div class="dash-section-title">قائمة الطالبات</div>
-      <div class="stat-row" style="margin-bottom:16px">
-        <div class="stat-box g"><div class="stat-num">${present.length}</div><div class="stat-lbl">حاضرات</div></div>
-        <div class="stat-box r"><div class="stat-num">${absent.length}</div><div class="stat-lbl">غائبات</div></div>
-        <div class="stat-box a"><div class="stat-num">${unknown.length}</div><div class="stat-lbl">لم يُسجَّل</div></div>
-      </div>
-      <div class="dash-card">
-        ${students.length === 0 
-          ? '<div style="text-align:center;color:var(--muted);padding:20px">لا توجد طالبات مسجلات</div>'
-          : renderGroup(present, '✅ حاضرات', 'var(--green)') +
-            renderGroup(absent, '🚫 غائبات', 'var(--red)') +
-            renderGroup(unknown, '⏳ لم يُسجَّل', 'var(--muted)')
-        }
-      </div>
-    </div>`;
-}
-
-// ─── قائمة السائقين ───
-function renderDriversList() {
-  const { drivers } = loadData();
-  const body = document.getElementById('dash-body');
-
-  body.innerHTML = `
-    <button class="dash-back-btn" onclick="renderSupervisorMain(document.getElementById('dash-body'))">→ رجوع</button>
-    <div class="dash-section">
-      <div class="dash-section-title">السائقين المسجلين (${drivers.length})</div>
-      <div class="dash-card">
-        ${drivers.length === 0
-          ? '<div style="text-align:center;color:var(--muted);padding:20px">لا يوجد سائقون مسجلون</div>'
-          : drivers.map((d, i) => `
-            <div class="student-item">
-              <div class="student-info">
-                <div class="student-name">${d.name}</div>
-                <div class="student-meta">📱 ${d.phone} — باص رقم: ${d.bus} — المستخدم: ${d.user}</div>
-              </div>
-              <button onclick="deleteDriver(${i})" style="background:var(--red-lite);color:var(--red);border:none;border-radius:8px;padding:5px 10px;font-family:'Tajawal',sans-serif;cursor:pointer;font-size:12px;font-weight:700">حذف</button>
-            </div>`).join('')
-        }
-      </div>
-      <button class="submit-btn supervisor" onclick="openModal('modal-add-driver')" style="margin-top:8px">➕ إضافة سائق</button>
-    </div>`;
-}
-
-// ─── داشبورد السائق ───
-function renderDriverMain(body) {
-  const { students } = loadData();
-  const busStudents = students.filter(s => s.bus === currentUser.bus);
-
-  body.innerHTML = `
-    <div class="dash-section">
-      <div class="dash-section-title">باصك — رقم ${currentUser.bus}</div>
-      <div class="stat-row">
-        <div class="stat-box a"><div class="stat-num">${busStudents.length}</div><div class="stat-lbl">الطالبات</div></div>
-        <div class="stat-box g"><div class="stat-num">0</div><div class="stat-lbl">وصلن</div></div>
-        <div class="stat-box r"><div class="stat-num">0</div><div class="stat-lbl">غائبات</div></div>
-      </div>
+  document.getElementById('profile-info-grid').innerHTML = `
+    <div class="info-card">
+      <div class="info-card-label">اسم المستخدم</div>
+      <div class="info-card-value">${escapeHtml(user.username)}</div>
     </div>
-    <div class="dash-section">
-      <div class="dash-section-title">الطالبات في باصك</div>
-      <div class="dash-card">
-        ${busStudents.length === 0
-          ? '<div style="text-align:center;color:var(--muted);padding:20px">لا توجد طالبات في باصك</div>'
-          : busStudents.map(s => `
-            <div class="student-item">
-              <div class="student-info">
-                <div class="student-name">${s.name}</div>
-                <div class="student-meta">ولي الأمر: ${s.parent}</div>
-              </div>
-            </div>`).join('')
-        }
-      </div>
-    </div>`;
-}
-
-// ─── داشبورد الطالبة ───
-function renderStudentMain(body) {
-  body.innerHTML = `
-    <div class="dash-section">
-      <div class="dash-section-title">حالة اليوم</div>
-      <div class="dash-card" style="display:flex;align-items:center;gap:14px">
-        <div style="width:50px;height:50px;background:var(--green-lite);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px">🚌</div>
-        <div style="flex:1">
-          <div style="font-weight:700;font-size:16px">الباص ${currentUser.bus === '1' ? 'الأول' : 'الثاني'}</div>
-          <div style="font-size:13px;color:var(--muted)">رقم جوال ولي الأمر: ${currentUser.parent || '—'}</div>
-        </div>
-      </div>
+    <div class="info-card">
+      <div class="info-card-label">الاسم العام</div>
+      <div class="info-card-value">${escapeHtml(user.global_name || '—')}</div>
     </div>
-    <div class="dash-section">
-      <div class="dash-section-title">إجراءات سريعة</div>
-      <div class="quick-grid">
-        <div class="quick-btn" onclick="showToast('✅ تم تسجيل حضورك!')">
-          <div class="quick-icon">✅</div>
-          <div class="quick-label">حاضرة</div>
-          <div class="quick-sub">سجّلي حضورك</div>
-        </div>
-        <div class="quick-btn" onclick="showToast('🚫 تم إبلاغ السائق')">
-          <div class="quick-icon">🚫</div>
-          <div class="quick-label">غائبة</div>
-          <div class="quick-sub">أبلغي بالغياب</div>
-        </div>
-        <div class="quick-btn" onclick="showToast('📍 جاري تحميل الخريطة...')">
-          <div class="quick-icon">📍</div>
-          <div class="quick-label">موقع الحافلة</div>
-          <div class="quick-sub">تتبع مباشر</div>
-        </div>
-        <div class="quick-btn" onclick="showToast('🔔 الإشعارات مفعّلة')">
-          <div class="quick-icon">🔔</div>
-          <div class="quick-label">الإشعارات</div>
-          <div class="quick-sub">إعدادات التنبيه</div>
-        </div>
-      </div>
-    </div>`;
+    <div class="info-card">
+      <div class="info-card-label">User ID</div>
+      <div class="info-card-value" style="font-size:0.85rem">${user.id}</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-label">إيميل</div>
+      <div class="info-card-value">${escapeHtml(user.email || 'غير مرتبط')}</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-label">نيترو</div>
+      <div class="info-card-value">${user.premium_type ? (user.premium_type === 1 ? 'Nitro Classic' : 'Nitro') : 'بدون نيترو'}</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-label">إجمالي القروبات</div>
+      <div class="info-card-value">${guilds.length} قروب</div>
+    </div>
+  `;
 }
 
-// ══════════════════════════════════════
-//  MODALS
-// ══════════════════════════════════════
-function openModal(id)  { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-function saveDriver() {
-  const name  = document.getElementById('drv-name').value.trim();
-  const phone = document.getElementById('drv-phone').value.trim();
-  const user  = document.getElementById('drv-user').value.trim();
-  const pass  = document.getElementById('drv-pass').value;
-  const bus   = document.getElementById('drv-bus').value.trim();
-
-  if (!name || !user || !pass || !bus) { showToast('⚠️ يرجى ملء جميع الحقول'); return; }
-
-  const { drivers } = loadData();
-  if (drivers.find(d => d.user === user)) { showToast('⚠️ اسم المستخدم موجود مسبقاً'); return; }
-
-  drivers.push({ name, phone, user, pass, bus });
-  saveDrivers(drivers);
-  closeModal('modal-add-driver');
-  clearFields(['drv-name','drv-phone','drv-user','drv-pass','drv-bus']);
-  showToast('✅ تم إضافة السائق بنجاح');
-  renderSupervisorMain(document.getElementById('dash-body'));
+/* ─────────────────────────────────
+   HELPERS
+───────────────────────────────── */
+function escapeHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-
-function saveStudent() {
-  const name   = document.getElementById('std-name').value.trim();
-  const parent = document.getElementById('std-parent').value.trim();
-  const user   = document.getElementById('std-user').value.trim();
-  const pass   = document.getElementById('std-pass').value;
-  const bus    = document.getElementById('std-bus').value;
-
-  if (!name || !user || !pass) { showToast('⚠️ يرجى ملء جميع الحقول'); return; }
-
-  const { students } = loadData();
-  if (students.find(s => s.user === user)) { showToast('⚠️ اسم المستخدم موجود مسبقاً'); return; }
-
-  students.push({ name, parent, user, pass, bus });
-  saveStudents(students);
-  closeModal('modal-add-student');
-  clearFields(['std-name','std-parent','std-user','std-pass']);
-  showToast('✅ تم إضافة الطالبة بنجاح');
-  renderSupervisorMain(document.getElementById('dash-body'));
+function var_accent() { return '#5865F2'; }
+function guildEmoji(name) {
+  const c = (name || 'G')[0].toUpperCase();
+  return c;
 }
-
-function deleteDriver(index) {
-  const { drivers } = loadData();
-  drivers.splice(index, 1);
-  saveDrivers(drivers);
-  showToast('🗑️ تم حذف السائق');
-  renderDriversList();
+function openGuild(id) {
+  window.open(`https://discord.com/channels/${id}`, '_blank');
 }
-
-function clearFields(ids) {
-  ids.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
+function copyId(id) {
+  navigator.clipboard.writeText(id).then(() => showToast('تم نسخ ID ✓'));
 }
-
-// ══════════════════════════════════════
-//  LOGOUT
-// ══════════════════════════════════════
-function doLogout() {
-  currentUser = null;
-  goTo('landing');
-  showToast('👋 تم تسجيل الخروج');
+function formatPerms(p) {
+  const perm = parseInt(p);
+  if (!perm) return '—';
+  if (perm & 0x8) return 'Administrator';
+  const list = [];
+  if (perm & 0x20)    list.push('إدارة القروب');
+  if (perm & 0x10)    list.push('طرد الأعضاء');
+  if (perm & 0x4)     list.push('إدارة القنوات');
+  return list.length ? list.slice(0,2).join(' · ') : 'صلاحيات متعددة';
 }
-
-// ══════════════════════════════════════
-//  TOAST
-// ══════════════════════════════════════
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), 3000);
+  setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// إغلاق المودال عند الضغط خارجه
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('open');
-  });
-});
-
-// Enter للدخول
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('page-login').classList.contains('active')) {
-    doLogin();
+/* ─────────────────────────────────
+   INIT
+───────────────────────────────── */
+async function init() {
+  // Handle OAuth callback (fragment in URL)
+  if (window.location.hash.includes('access_token')) {
+    const ok = await handleCallback();
+    if (ok) return;
   }
-});
+
+  // Existing session?
+  const token  = localStorage.getItem(TOKEN_KEY);
+  const user   = JSON.parse(localStorage.getItem(USER_KEY)  || 'null');
+  const guilds = JSON.parse(localStorage.getItem(GUILDS_KEY) || 'null');
+  if (token && user && guilds) {
+    renderApp(user, guilds);
+    return;
+  }
+
+  // Need setup?
+  const cfg = getConfig();
+  if (!cfg || !cfg.clientId) {
+    showPage('page-landing');
+    return;
+  }
+
+  showPage('page-landing');
+}
+
+init();
 </script>
 </body>
 </html>
